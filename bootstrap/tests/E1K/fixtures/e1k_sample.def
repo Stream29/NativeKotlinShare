@@ -1,0 +1,12 @@
+headers = e1k_sample.h
+package = e1k.sample
+headerFilter = e1k_*.h
+strictEnums = E1kStatus
+nonStrictEnums = E1kMode
+excludedFunctions = e1k_excluded_helper
+excludedMacros = E1K_EXCLUDED_MACRO
+exportForwardDeclarations = cnames.structs.E1kOpaque
+---
+static inline int32_t e1k_inline_triple(int32_t v) {
+    return v * 3 + E1K_MAGIC_INT;
+}

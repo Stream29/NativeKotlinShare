@@ -1,0 +1,4 @@
+headers = e1_c_sample.h
+headerFilter = e1_c_sample.h
+staticLibraries = libe1_c_sample.a
+package = e1.cinterop.sample

@@ -1,0 +1,4 @@
+[submodule "kotlin"]
+	path = kotlin
+	url = https://github.com/Stream29/kotlin.git
+	branch = native-host
