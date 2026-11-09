@@ -1,12 +1,27 @@
 # NativeKotlinShare — Self-Hosted Kotlin/Native Compiler (`0` JVM)
 
-將官方 Kotlin/Native 编译器（`konanc`、`cinterop`、`klib`）从 JVM 宿主完整移植并自举至 **Kotlin/Native（`linux_x64`）**，在不依赖任何 JVM、Java 字节码或 JNI 的纯净环境（`env -i PATH=/nonexistent`）下独立运行，并完成 `stage0 -> stage1 -> stage2 -> stage3` 三阶段自举与逐字节不动点验证（`stage2 == stage3`）。
+将官方 Kotlin/Native 编译器（`konanc`、`cinterop`、`klib`）从 JVM 宿主完整移植并自举至 **4 大原生宿主平台（`linux_x64`、`linux_arm64`、`macos_arm64`、`mingw_x64` / Windows x64）**，在不依赖任何 JVM、Java 字节码或 JNI 的纯净环境（`env -i PATH=/nonexistent`）下独立运行，并完成 `stage0 -> stage1 -> stage2 -> stage3` 三阶段自举与逐字节不动点验证（`stage2 == stage3`）。
+
+---
+
+## 预编译四平台发行包下载（[`v2.4.21-native`](https://github.com/Stream29/NativeKotlinShare/releases/tag/v2.4.21-native)）
+
+所有预编译包均保持与官方 `kotlin-native-prebuilt` 一致的开箱即用体验：首次执行 `bin/konanc`（或 `kotlinc-native`、`cinterop`、`klib`）时自动检查并初始化 `${KONAN_DATA_DIR:-~/.konan}/dependencies` 中的官方 LLVM / sysroot 依赖，全程 **0 JVM 依赖**。
+
+| 宿主平台 | 发行包名称 | 体积 | SHA256 校验和 |
+| :--- | :--- | :---: | :--- |
+| **Linux x86_64** (`linux_x64`) | [`native-kotlin-dist-linux-x64.tar.gz`](https://github.com/Stream29/NativeKotlinShare/releases/download/v2.4.21-native/native-kotlin-dist-linux-x64.tar.gz) | `75 MB` | `688d8c4141332eae3a2cbdf009df2b10fb5934da4240db5c5c516738c5ce0cda` |
+| **Linux ARM64** (`linux_arm64`) | [`native-kotlin-dist-linux-arm64.tar.gz`](https://github.com/Stream29/NativeKotlinShare/releases/download/v2.4.21-native/native-kotlin-dist-linux-arm64.tar.gz) | `131 MB` | `31134e9d289e30035551865e25eb5b3d5bf22eb198e7602ee765a0e0b93ede01` |
+| **macOS Apple Silicon** (`macos_arm64`) | [`native-kotlin-dist-macos-arm64.tar.gz`](https://github.com/Stream29/NativeKotlinShare/releases/download/v2.4.21-native/native-kotlin-dist-macos-arm64.tar.gz) | `122 MB` | `787efc36888fa4f0c96e89eb08d63429d099fc3a0eec9649c08ce6ab95480f75` |
+| **Windows x64** (`mingw_x64`) | [`native-kotlin-dist-windows-x64.zip`](https://github.com/Stream29/NativeKotlinShare/releases/download/v2.4.21-native/native-kotlin-dist-windows-x64.zip) | `40 MB` | `93ad96da927fc7160dfbf02cbcd63bf8e0ea77cbe356726c50a877e7f581a032` |
 
 ---
 
 ## 核心成果速览
 
-- **基线版本**：上游 [`JetBrains/kotlin` @ `9180ce6a7a7d3627f88b424717583f28ddca052d`](./kotlin)（`2.4.20-dev-7885`），配套 LLVM `21.1.6`（`llvm-21-x86_64-linux-dev-116`）。
+- **基线版本**：上游 [`JetBrains/kotlin` @ `9180ce6a7a7d3627f88b424717583f28ddca052d`](./kotlin)（`2.4.20-dev-7885`），配套 LLVM `21.1`。
+- **与官方 `:kotlin-native:dist` 产物 100% 语义/IR 对齐**：
+  - 使用官方 JVM `konanc` 与自举 Native `konanc` 编译同一份源码：KLIB 内部目录树（`29/29` 项）、`default/manifest`、`klib dump-abi`、`klib dump-ir`、`klib dump-metadata`、`klib dump-metadata-signatures` **100% 零差异**；全部 16 个 IR 二进制文件（`default/ir/*` 与 `default/ir_inlinable_functions/*`）及 `default/linkdata/module` 达到 **SHA256 逐字节完全一致**；生成的 `.kexe` 运行输出与动态符号表（`nm -D`）**100% 一致**。
 - **零算法重写、最小化宿主适配**：
   - 完整保留上游编译器核心算法、K2 FIR 前端、PSI/LightTree 解析器、KLIB 序列化/反序列化、Native IR Lowering、全程序优化（`Devirtualization`、`EscapeAnalysis`、`UnboxInline`、`DCE`）以及 LLVM 21 Bitcode 代码生成流水线。
   - 仅用纯 Kotlin/Native（POSIX / `zlib` / 原生内存分配器 / `libllvmext` / `libclangext`）替换底层 JVM I/O、ZIP、反射、ServiceLoader 与 JNI 桥接。
@@ -76,9 +91,9 @@ git log --oneline 9180ce6a7a7d3627f88b424717583f28ddca052d..HEAD
 
 | 层级 | Commit 主题 | 核心路径 | 职责概述 |
 | :---: | :--- | :--- | :--- |
-| **1** | `feat(native-host): add POSIX/zlib host shims, unsafe-mem, and KLIB/config foundations` | `core/*`, `compiler/config`, `compiler/util*`, `native/unsafe-mem`, `native/utils`, `kotlin-native/klib` | 替换 `java.io`/`java.nio`/`java.util.zip` 与 JVM 反射，提供 POSIX 文件系统、ZIP 容器、原生内存分配器与 KLIB 基础层 |
+| **1** | `feat(native-host): add POSIX/Win32/zlib host shims, unsafe-mem, and KLIB/config foundations` | `core/*`, `compiler/config`, `compiler/util*`, `native/unsafe-mem`, `native/utils`, `kotlin-native/klib` | 替换 `java.io`/`java.nio`/`java.util.zip` 与 JVM 反射，提供跨平台（Linux/macOS/Windows）文件系统、ZIP 容器、原生内存分配器与 KLIB 基础层 |
 | **2** | `feat(native-host): port libllvmext, llvmDebugInfoC, and libclangext bindings to Kotlin/Native` | `kotlin-native/{llvmInterop,libllvmext,llvmDebugInfoC,libclangInterop,libclangext,Interop}` | 原生化 965 个 LLVM C/C++ 绑定与 378 个 `libclang` 绑定，接通纯 Native `cinterop` Indexer 与 StubGenerator |
-| **3** | `feat(native-host): adapt IntelliJ PSI, LightTree lexer/parser, and VFS for Native host` | `compiler/psi/*`, `compiler/frontend.common*` | 适配 JFlex 词法分析器、Kotlin 语法解析器、LightTree 与 PSI AST，消除 IntelliJ 动态服务反射 |
+| **3** | `feat(native-host): adapt IntelliJ PSI, LightTree lexer/parser, container, and VFS for Native host` | `compiler/psi/*`, `compiler/container/*`, `compiler/frontend.common*` | 适配 JFlex 词法分析器、Kotlin 语法解析器、LightTree、PSI AST 与 DI 容器，消除 IntelliJ 动态服务反射 |
 | **4** | `feat(native-host): port K2 FIR frontend, resolution, and KLIB serializer to Native` | `compiler/fir/*`, `compiler/resolution.common`, `compiler/serialization`, `compiler/cli/cli-native-klib` | 接通完整 K2 FIR 树、Cone 类型系统、符号解析、Checkers 诊断、FIR2IR 与 KLIB 序列化 |
 | **5** | `feat(native-host): port Kotlin/Native IR inline, lowerings, and LLVM bitcode/cache backend` | `compiler/ir/*`, `native/{frontend,base}`, `kotlin-native/backend.native` | 接通 Native IR 反序列化、内联、全程序优化（`Devirt`/`EscapeAnalysis`/`UnboxInline`/`DCE`）、LLVM Bitcode 发射与 `static_cache` 后端 |
 | **6** | `feat(native-host): add zero-JVM konanc/cinterop/klib Native CLI entrypoints and runtime recipes` | `compiler/cli/cli-base`, `native/cli-native`, `kotlin-native/{utilities,runtime,platformLibs}` | 提供表驱动参数解析与 `konanc-cli.kexe` 多合一 CLI 入口，达成 `stage2 == stage3` 不动点自举 |

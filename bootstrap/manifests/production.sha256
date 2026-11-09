@@ -2255,7 +2255,7 @@ e377033ed18d0e486ebac61440c840b63dadeb40339103ec449fd5f51026e631  kotlin/compile
 d91875f63f0c80ecfdc1cb6d3d675683ae22590a6a7e63b05e49048afbbbebeb  kotlin/compiler/ir/serialization.common/native/org/jetbrains/kotlin/backend/common/diagnostics/NativeJarManifest.kt
 073779900283271aedc7667f157e95aac8a33eaa60f87b3fc41a730e35b9fbca  kotlin/compiler/ir/serialization.common/native/org/jetbrains/kotlin/backend/common/serialization/IrFlags.kt
 c51c199a3ca79dc3ff24b20bbd47ff6ac8712d35a44cd56e299df3fe5f97ce5a  kotlin/compiler/ir/serialization.common/native/org/jetbrains/kotlin/backend/common/serialization/NativeOriginRegistry.kt
-2ca18b7811408fecd5a10b317d4e901627718c382bee6c2527d67205e692ce6a  kotlin/compiler/ir/serialization.common/native/org/jetbrains/kotlin/backend/common/serialization/SerializationFileIo.kt
+e4a859c7684e3f5ddcbf82021e775576f64c47ea2579ab73b9506a025d3dc364  kotlin/compiler/ir/serialization.common/native/org/jetbrains/kotlin/backend/common/serialization/SerializationFileIo.kt
 3c818e8dbc22525792cbae8a96dd905d29d9dbd9c515905c672405dfc183c6bd  kotlin/compiler/ir/serialization.common/native/org/jetbrains/kotlin/backend/common/serialization/SerializationUtf8.kt
 9fcb68bd96113ccd7eacf648dfc82fce77dd95a7473a058079cd874cb9eac6ac  kotlin/compiler/ir/serialization.common/native/org/jetbrains/kotlin/cli/CliDiagnosticReportingSupport.kt
 1b5caa488f04f923db515ef1c02d679a4542dcf89adff9a910c8aeac006ff42b  kotlin/compiler/ir/serialization.common/native/org/jetbrains/kotlin/cli/common/CLIConfigurationKeysSupport.kt
@@ -2438,7 +2438,7 @@ e3cf7201d5c2cb67fe7f29b6bf46f782a1508b4055b4aa2013d9b81579aa669e  kotlin/compile
 f5d6c93059210b61e817cf0565e8533686b1d982eff11a8f3d956bdfaf2ee0ba  kotlin/compiler/util-klib/native/org/jetbrains/kotlin/io/KlibIoExtensions.kt
 5a2a4ef9837cc68f100d85504daec25b23d3f2c17d0b9aaf9202bc48c16b0438  kotlin/compiler/util-klib/native/org/jetbrains/kotlin/konan/file/KlibKonanFile.kt
 e6fec42483ae8560e6178927ad0920e43fe85bbcd5e220795b84598b6b423c18  kotlin/compiler/util-klib/native/org/jetbrains/kotlin/konan/properties/Properties.kt
-15c2c53da6d693ba22cae36925d8680fa7d67e76dca945e3f8e9f70c64897bcb  kotlin/compiler/util-klib/native/org/jetbrains/kotlin/library/KlibPath.kt
+f64321e17098e3f012f1b46bdebffd1cff1f736d79e0982579988bddbe6c9796  kotlin/compiler/util-klib/native/org/jetbrains/kotlin/library/KlibPath.kt
 3f85f472ff047bf5521ff253f355c009c0954da9d42996eb2db1d6e37e8278b7  kotlin/compiler/util-klib/native/org/jetbrains/kotlin/library/impl/KlibLayoutReadersWriters.kt
 b9689566bfeb3d6c96acc6d228a56533dc8d1598ba1f5503f40f3f0261794697  kotlin/compiler/util-klib/native/org/jetbrains/kotlin/platform/jvm/JvmPlatformSupport.kt
 8f638d629aa196c6fc7d4f9c8fe601f7aa0056c5f51ea9876b5fed25cac43c75  kotlin/compiler/util-klib/native/org/jetbrains/kotlin/platform/konan/NativePlatforms.kt
@@ -2485,18 +2485,18 @@ bb4cd787a3eafd8fe87a05c53ea636f88adcadaf4160f252a249e771c55b1ef0  kotlin/compile
 5c555896410f38badd71e089e26a8de0c3a2c32a1124a6e43a40480274084402  kotlin/kotlin-native/Interop/StubGenerator/native/kotlinx/cinterop/JvmCInteropCallbacksSupport.kt
 01afc9f962fa73961ab7a4997895ccc2663bf54cc14f041527fa86aebdc35540  kotlin/kotlin-native/Interop/StubGenerator/native/org/jetbrains/kotlin/io/ResolvablePropertiesSupport.kt
 8c05c3c8809caece33a4b66b7d6426a128214ffbf0dd5184ac4623b7ee9abe35  kotlin/kotlin-native/Interop/StubGenerator/native/org/jetbrains/kotlin/konan/TempFiles.kt
-b129f7e073f06a93cb851a285844c57ab78f315aaaa9f5343f50e45037263231  kotlin/kotlin-native/Interop/StubGenerator/native/org/jetbrains/kotlin/konan/host/NativeHostExtensions.kt
+3d9d2816907c2d5d056f204b2471bc7e621c1ee1eebd46899f5cc20aedea8854  kotlin/kotlin-native/Interop/StubGenerator/native/org/jetbrains/kotlin/konan/host/NativeHostExtensions.kt
 a26ff50ca18c4d60b3d54fb401c5a498f4a4d9903d4ffd02526e70c3456bd6aa  kotlin/kotlin-native/Interop/StubGenerator/native/org/jetbrains/kotlin/konan/library/KonanLibraryLoaderSupport.kt
 459d23a17d974b59686ab9100fdc7317ba5be49d8410e9addeaaa4ba7c0f0893  kotlin/kotlin-native/Interop/StubGenerator/native/org/jetbrains/kotlin/konan/library/KonanLibrarySupport.kt
 de1d9ba5f3392b0a5ed2b06c24df7e5261d910ba4d37d73fead2b4cb871d5399  kotlin/kotlin-native/Interop/StubGenerator/native/org/jetbrains/kotlin/konan/library/components/KlibNativeComponentsSupport.kt
 97b9b90309418c61b6402b792320e56248808df0c4fa4e0f9bf352f5ee2f82b6  kotlin/kotlin-native/Interop/StubGenerator/native/org/jetbrains/kotlin/konan/library/impl/KlibNativeComponentsImplSupport.kt
 e8f5f7022d070c9eac26eeeb5cbbb52f23a31e4fb551ac572d92dfa3ca3a32f8  kotlin/kotlin-native/Interop/StubGenerator/native/org/jetbrains/kotlin/konan/library/writer/NativeKlibWriterUtils.kt
 707f6ee50582e22aacb68fe2d8a1dadbdef5f48842e06c416a7097e464095a4c  kotlin/kotlin-native/Interop/StubGenerator/native/org/jetbrains/kotlin/konan/properties/KonanPropertiesSupport.kt
-a36b337de330a5f1e75b28d238f6571a2c4107c20b368612338b6005cddcc3c8  kotlin/kotlin-native/Interop/StubGenerator/native/org/jetbrains/kotlin/konan/target/KonanTargetPlatformSupport.kt
+45a44ba4d61ae552a336fd70882ca53bbb3c5b3952313613511719670a04303b  kotlin/kotlin-native/Interop/StubGenerator/native/org/jetbrains/kotlin/konan/target/KonanTargetPlatformSupport.kt
 55b8798102ddbba2123613f1fd8db057e16c61c5ed9a7ed685ca8bbb912c4d1a  kotlin/kotlin-native/Interop/StubGenerator/native/org/jetbrains/kotlin/konan/target/KonanTargetSupport.kt
 80243b603b180a6fd86c6c104e8588569af32cdc8f7cd6fa9bc5935dc00e4976  kotlin/kotlin-native/Interop/StubGenerator/native/org/jetbrains/kotlin/konan/util/KonanDefFileSupport.kt
-28848ddfddaaab6b92e8cb2827630926d531edcfe476f6c8cea09ee31a9b914a  kotlin/kotlin-native/Interop/StubGenerator/native/org/jetbrains/kotlin/konan/util/KonanUtilSupport.kt
-fbc51f8bfe9cad5e7ebe3295b7a7ad4cb77609c144dfd1599ad3ba9e445a3b30  kotlin/kotlin-native/Interop/StubGenerator/native/org/jetbrains/kotlin/util/StringSuffixSupport.kt
+cfca6142bdc9c4cc9d2872518a91b98e6fa061ec7c939488bea239ecd7794889  kotlin/kotlin-native/Interop/StubGenerator/native/org/jetbrains/kotlin/konan/util/KonanUtilSupport.kt
+4b77cd8b12f730f20629ef57d76789a18bbbc41bfadbe5e4f80f22496086e940  kotlin/kotlin-native/Interop/StubGenerator/native/org/jetbrains/kotlin/util/StringSuffixSupport.kt
 eafd32ebb71c04e5eb13c9dc0317b25e01945b310c6e228d74590b224f6aff0a  kotlin/kotlin-native/Interop/StubGenerator/native/org/jetbrains/kotlin/utils/KotlinNativePaths.kt
 57f99863e4a2b636dd698b40189344c3efe16f931b3b4ae41390b71f0f3a784f  kotlin/kotlin-native/Interop/StubGenerator/native/org/jetbrains/kotlin/utils/NativeMemoryAllocatorSupport.kt
 9ce5564dac719472fefabb08e9d17c0e3df36053c3d5d8f9734b3bc6b3a9edb0  kotlin/kotlin-native/Interop/StubGenerator/src/org/jetbrains/kotlin/native/interop/gen/AbiSpecific.kt
@@ -2530,7 +2530,7 @@ fcb5a72b54390b242c073f6882fd6d6f0cf6bf997d0ca5abc9487e458b68e31a  kotlin/kotlin-
 02013b907dc7b5b497dceaa55e1f42b1fea97bfe955fe47f805f177a60343361  kotlin/kotlin-native/Interop/StubGenerator/src/org/jetbrains/kotlin/native/interop/gen/jvm/CommandLine.kt
 467b0974fed7b8c4f889e0a60e2402f810cbd4c7ab6727a1421489d6e1373902  kotlin/kotlin-native/Interop/StubGenerator/src/org/jetbrains/kotlin/native/interop/gen/jvm/GenerationMode.kt
 996cc7f11b5635f321a212f08d5bfa3260a537a9302205547430ffbd40333ee9  kotlin/kotlin-native/Interop/StubGenerator/src/org/jetbrains/kotlin/native/interop/gen/jvm/InteropConfiguration.kt
-a5c4cae1b6575dc008a91763a48c2faf3f531bd2c26c0e3e43614f5715cdec7a  kotlin/kotlin-native/Interop/StubGenerator/src/org/jetbrains/kotlin/native/interop/gen/jvm/InteropLibraryCreation.kt
+b25a1de84b0aea0c012f7e84b97588fc50a8bc6aea21df61215bd4899a07ac36  kotlin/kotlin-native/Interop/StubGenerator/src/org/jetbrains/kotlin/native/interop/gen/jvm/InteropLibraryCreation.kt
 82185226404e1ca5c949505abe51146ff14ddc1f6d80c02aea36bf65d8202db8  kotlin/kotlin-native/Interop/StubGenerator/src/org/jetbrains/kotlin/native/interop/gen/jvm/ToolConfig.kt
 a5f46a037b4ebe57d5cbfc5dcf520348068cadfc08ffa363d13658ac7d60721b  kotlin/kotlin-native/Interop/StubGenerator/src/org/jetbrains/kotlin/native/interop/gen/jvm/main.kt
 81bcaac18807a38dc96777d49755e67af7a6df87091f6d63799182f05988c428  kotlin/kotlin-native/backend.native/compiler/ir/backend.native/build.gradle.kts
@@ -2539,7 +2539,7 @@ a5f46a037b4ebe57d5cbfc5dcf520348068cadfc08ffa363d13658ac7d60721b  kotlin/kotlin-
 3ad6994bb894c5318c1080b1844a0e69e4e3e8b0a66e675d124d7f88673f89e6  kotlin/kotlin-native/backend.native/compiler/ir/backend.native/src/org/jetbrains/kotlin/backend/konan/Boxing.kt
 5d8ac2ee66b960e19b963ea2fa3fad86a9d156f733ec1fc08b18df70b9a71169  kotlin/kotlin-native/backend.native/compiler/ir/backend.native/src/org/jetbrains/kotlin/backend/konan/CStubsManager.kt
 602e7c661ebd6ef6b53ea9f38525bf5730b61cccac3531999c664c06b91d74e7  kotlin/kotlin-native/backend.native/compiler/ir/backend.native/src/org/jetbrains/kotlin/backend/konan/CacheBinariesResolver.kt
-56c0eff235312fba1df033d4b74145f51fa36665189fee6355eb0b8e3035824d  kotlin/kotlin-native/backend.native/compiler/ir/backend.native/src/org/jetbrains/kotlin/backend/konan/CacheBuilder.kt
+868c0214c808dda2ee6b9b59c59e99acdec69a996d04a3d8ab3736fb4590c953  kotlin/kotlin-native/backend.native/compiler/ir/backend.native/src/org/jetbrains/kotlin/backend/konan/CacheBuilder.kt
 2b914e6529ce645f282b77330fe94be75f6ae3a49ddfb952eaea02719117e6a4  kotlin/kotlin-native/backend.native/compiler/ir/backend.native/src/org/jetbrains/kotlin/backend/konan/CacheStorage.kt
 d151f298a1d31414cbc10d26f7d7f62f74cf7f0c3c8c5984da79fd45ba93ac92  kotlin/kotlin-native/backend.native/compiler/ir/backend.native/src/org/jetbrains/kotlin/backend/konan/CacheSupport.kt
 64dc574c270afb5ba5ff7ed50101d3dd3dfa11149c03e494b42992551220b3c1  kotlin/kotlin-native/backend.native/compiler/ir/backend.native/src/org/jetbrains/kotlin/backend/konan/CachedLibraries.kt
@@ -2555,7 +2555,7 @@ f55b575607553e35159b24640817bf982f5cdaf7596d5799953e68332530181a  kotlin/kotlin-
 b1f64837499bf327ac07c22d64c0b77160a184a859584e409a5bc69230fc1f36  kotlin/kotlin-native/backend.native/compiler/ir/backend.native/src/org/jetbrains/kotlin/backend/konan/KonanBackendContext.kt
 25696df76fd23bcd6a26e527e26ca4624ef084cd0850f79333731f487468ed8a  kotlin/kotlin-native/backend.native/compiler/ir/backend.native/src/org/jetbrains/kotlin/backend/konan/KonanCompilerFrontendServices.kt
 cac1f64ca378da57c44895859a18c63b71a9d4a0989de2cc120682176bb2c454  kotlin/kotlin-native/backend.native/compiler/ir/backend.native/src/org/jetbrains/kotlin/backend/konan/KonanDriver.kt
-a558a339a0cd16e15aeeff2fd72930841dfb715dd45d49fcb3c224fd10836958  kotlin/kotlin-native/backend.native/compiler/ir/backend.native/src/org/jetbrains/kotlin/backend/konan/Linker.kt
+579f1de18b8ddb9c539b625b3291e70e089f805efcf6f2860a003431e84e5cc8  kotlin/kotlin-native/backend.native/compiler/ir/backend.native/src/org/jetbrains/kotlin/backend/konan/Linker.kt
 30274480544d32ff9e813b7ae7822ba7d842d3855e3c5965c534a0333fe5c843  kotlin/kotlin-native/backend.native/compiler/ir/backend.native/src/org/jetbrains/kotlin/backend/konan/LlvmModuleSpecification.kt
 fbbfd49a06446bce9b9ede4548313aff9cc065e32a2313aaf43ea6a03fa576f2  kotlin/kotlin-native/backend.native/compiler/ir/backend.native/src/org/jetbrains/kotlin/backend/konan/LlvmModuleSpecificationImpl.kt
 4b600005d9a3d6becfec21168a9f53ade8a7c95ee7766ae2efe651f04a517820  kotlin/kotlin-native/backend.native/compiler/ir/backend.native/src/org/jetbrains/kotlin/backend/konan/NativeGenerationState.kt
@@ -2571,7 +2571,7 @@ c67997af4bf6316162b3030f76c642f5ee761396f1d35a830e18889b25d6235f  kotlin/kotlin-
 ef75ad9829eb7ba9bb9ea739d80fe5263e009589a70fce163ef949c36c6ef91e  kotlin/kotlin-native/backend.native/compiler/ir/backend.native/src/org/jetbrains/kotlin/backend/konan/cexport/CAdapterCodegen.kt
 6e434e0796b51438b05b9bebb5020a54ca78fdf269ada45a72ed027972245b2d  kotlin/kotlin-native/backend.native/compiler/ir/backend.native/src/org/jetbrains/kotlin/backend/konan/cexport/CAdapterCompile.kt
 57c8e893f413cf5c7a2ab28308f8dc8ac917c48489de47396dc7737249ca3399  kotlin/kotlin-native/backend.native/compiler/ir/backend.native/src/org/jetbrains/kotlin/backend/konan/cexport/CAdapterExportedElements.kt
-5d7f2e5bbaf9f0bf7822c0093fb915787786674de57a694977b8cc0fd3b44c35  kotlin/kotlin-native/backend.native/compiler/ir/backend.native/src/org/jetbrains/kotlin/backend/konan/cexport/CAdapterGenerator.kt
+3ff8996fd8a05cbf63b73e20a41871c0ffbf7a2f4fedea7d9219d5258d33bca0  kotlin/kotlin-native/backend.native/compiler/ir/backend.native/src/org/jetbrains/kotlin/backend/konan/cexport/CAdapterGenerator.kt
 0b64e94e7ed4b65f10b64f5b7ecf652c5f120c46a6c598d0edcd8f264671bc49  kotlin/kotlin-native/backend.native/compiler/ir/backend.native/src/org/jetbrains/kotlin/backend/konan/cexport/CAdapterTypeTranslator.kt
 63e353b09491c9d708187d692e4bcb212b022ca67954ffc7da502b65321a717c  kotlin/kotlin-native/backend.native/compiler/ir/backend.native/src/org/jetbrains/kotlin/backend/konan/cgen/CBridgeGen.kt
 6eecde20ee629e31f068b3301068a2b9708199439b55f3a51e64fcd6f76400cd  kotlin/kotlin-native/backend.native/compiler/ir/backend.native/src/org/jetbrains/kotlin/backend/konan/cgen/CBridgeGenUtils.kt
@@ -2620,7 +2620,7 @@ a5d0a76226aec45fc1124d2c40a4a5103c7b8dc1c58106b4d2ae30d4a0bae8f6  kotlin/kotlin-
 bbb15e693c1c73a77d25bd1f7a5ee4bd2e6d9f8e2d0b0d0035957b07382c7aae  kotlin/kotlin-native/backend.native/compiler/ir/backend.native/src/org/jetbrains/kotlin/backend/konan/llvm/LlvmLinkOptions.kt
 ac3973cbb29052f71dac0fd2b395396ac59cc4b2d8984ccd947ca865eeb8d570  kotlin/kotlin-native/backend.native/compiler/ir/backend.native/src/org/jetbrains/kotlin/backend/konan/llvm/LlvmParamType.kt
 aceafe6c8aa68e408c19a082f16f5640af59befcd0318c8c6848b3f119b0a67a  kotlin/kotlin-native/backend.native/compiler/ir/backend.native/src/org/jetbrains/kotlin/backend/konan/llvm/LlvmPassesProfile.kt
-08f8ddac424c06058405a7ed05c3c146b9e097b89017285045ad23283da9fe0a  kotlin/kotlin-native/backend.native/compiler/ir/backend.native/src/org/jetbrains/kotlin/backend/konan/llvm/LlvmUtils.kt
+c37b27a0dc8eaec5e42be0b71917b9fcd7ae9db6b53e2201314f771c52a293a9  kotlin/kotlin-native/backend.native/compiler/ir/backend.native/src/org/jetbrains/kotlin/backend/konan/llvm/LlvmUtils.kt
 41d1e51cf541f6ba6ff154e45f22b0fde3cd8c5f180a09470cdc180b736bea00  kotlin/kotlin-native/backend.native/compiler/ir/backend.native/src/org/jetbrains/kotlin/backend/konan/llvm/NativeRuntimeConstants.kt
 57b8461510ed35ff5fa079e0682751bc360d6016f53853a3bf3742ede6244be5  kotlin/kotlin-native/backend.native/compiler/ir/backend.native/src/org/jetbrains/kotlin/backend/konan/llvm/NativeRuntimeOverridableConstants.kt
 2f3697fb6318ff33032096d504eb6fa38aa1ee1d50aa27996146bf7b276dd8d9  kotlin/kotlin-native/backend.native/compiler/ir/backend.native/src/org/jetbrains/kotlin/backend/konan/llvm/RTTIGenerator.kt
@@ -2636,7 +2636,7 @@ b3c1967a0bc7816ce4ec49e7160041b2109905f9bba72a8e36d55c12777455ba  kotlin/kotlin-
 c4d862e34a8c99c30026db00b6ce2386bca91d12a4e5d89f818af093a196cf92  kotlin/kotlin-native/backend.native/compiler/ir/backend.native/src/org/jetbrains/kotlin/backend/konan/llvm/objc/BindReverseBridgeToMethodCodeGenerator.kt
 f8decff2d20b703e79e53e96d35046a434b5ac47be690bc262153b327756606b  kotlin/kotlin-native/backend.native/compiler/ir/backend.native/src/org/jetbrains/kotlin/backend/konan/llvm/objc/ObjCCodeGenerator.kt
 416ce52863b998aa35c694ed855666c1ae5139a85978109c1614b2001b924c84  kotlin/kotlin-native/backend.native/compiler/ir/backend.native/src/org/jetbrains/kotlin/backend/konan/llvm/objc/ObjCDataGenerator.kt
-a58d5bb5df7f9df020235043e0f504bee6a46e44794f5d07f8ea8c99095213c8  kotlin/kotlin-native/backend.native/compiler/ir/backend.native/src/org/jetbrains/kotlin/backend/konan/llvm/objc/linkObjC.kt
+a4e98b2b6c305abc0f0a1fac60066b04e517c22b5fc1870e935546e5fc8f5599  kotlin/kotlin-native/backend.native/compiler/ir/backend.native/src/org/jetbrains/kotlin/backend/konan/llvm/objc/linkObjC.kt
 4af782c9e70bc2cf07a93a647854a4aaaa8590e8a1e7f2f0a4e5c21dc5af8a48  kotlin/kotlin-native/backend.native/compiler/ir/backend.native/src/org/jetbrains/kotlin/backend/konan/llvm/objcexport/BlockPointerSupport.kt
 4051a2afeabec43202c8dccbffeab954799a24f7a1b060931fd6b876185cfb14  kotlin/kotlin-native/backend.native/compiler/ir/backend.native/src/org/jetbrains/kotlin/backend/konan/llvm/objcexport/ObjCExportCodeGenerator.kt
 b6566ade7100f1e55464116b712101848dcaff67bb2304064c2cbf28f15e1072  kotlin/kotlin-native/backend.native/compiler/ir/backend.native/src/org/jetbrains/kotlin/backend/konan/llvm/objcexport/ObjCTypeAdapter.kt
@@ -2703,7 +2703,7 @@ d5810616921bbda1ed85b803b9f7eb9ead7856bb01f3dfe30c82e52212f71cc0  kotlin/kotlin-
 46015a7777af49e5fd0259547fc9649fda4a74897871f02357f02ed9d2fbb905  kotlin/kotlin-native/backend.native/compiler/ir/backend.native/src/org/jetbrains/kotlin/backend/konan/objcexport/BundleBuilder.kt
 918385887713fc83e9654d6bf845d8888601de988d0762c54d92396814bad045  kotlin/kotlin-native/backend.native/compiler/ir/backend.native/src/org/jetbrains/kotlin/backend/konan/objcexport/FrameworkBuilder.kt
 12bf491b103626cbb392ff03dd48ca6dcc922551f90cd13871a07e2c593316e8  kotlin/kotlin-native/backend.native/compiler/ir/backend.native/src/org/jetbrains/kotlin/backend/konan/objcexport/InfoPListBuilder.kt
-a4a31c1bed58cf0855d23e68eb40c65b98c900bd2f5db954372ebfc04fa63bb8  kotlin/kotlin-native/backend.native/compiler/ir/backend.native/src/org/jetbrains/kotlin/backend/konan/objcexport/ObjCExport.kt
+d16213854d795bce77900e8568c73591f55249f942803d88924c1fddb4016f75  kotlin/kotlin-native/backend.native/compiler/ir/backend.native/src/org/jetbrains/kotlin/backend/konan/objcexport/ObjCExport.kt
 901580db1b343a914608784d8e80d79d4388876f2a7a86618ccdfe19e295e5a9  kotlin/kotlin-native/backend.native/compiler/ir/backend.native/src/org/jetbrains/kotlin/backend/konan/objcexport/ObjCExportCodeSpec.kt
 aa1e1b26eaee206bd88ec8e3e8cf377fe1488b5821a2b388115c28fb3036ddca  kotlin/kotlin-native/backend.native/compiler/ir/backend.native/src/org/jetbrains/kotlin/backend/konan/optimizations/CallGraphBuilder.kt
 6b7c0d952768762a318b1013b82f375fa7df85b7b3341242bdc042079c93e3b3  kotlin/kotlin-native/backend.native/compiler/ir/backend.native/src/org/jetbrains/kotlin/backend/konan/optimizations/CastsOptimization.kt
@@ -3325,10 +3325,10 @@ c777da7989010527949b89a89b09c7debd4186b869ed6b8783562981e34f62af  kotlin/kotlin-
 dbe59d6d5be732ce1a9286a0b3753ce242c47ef116749fe1758b431300dba76d  kotlin/kotlin-native/runtime/src/utfcpp/cpp/utf8/with_replacement.h
 406f2f1e0ee80f6b8849c60dba948610d388e83efa96f78d5536c8203b782958  kotlin/kotlin-native/runtime/src/xctest_launcher/cpp/TestLauncher.h
 95fc95f6fd653fac07fc20d79514897d94ca01ae13769c1d9e6843cbc12d84cd  kotlin/kotlin-native/runtime/src/xctest_launcher/cpp/TestLauncher.mm
-7fb019d1c1631d387cb8a175c1cc8870d34610ec89894ba34de9c19d92a5e01a  kotlin/kotlin-native/utilities/cli-runner/src/org/jetbrains/kotlin/cli/utilities/GeneratePlatformLibraries.kt
+b46904d5fb433ab99d86fd5909c7f8a9387390b3ecb032c3ff3480e9287ee024  kotlin/kotlin-native/utilities/cli-runner/src/org/jetbrains/kotlin/cli/utilities/GeneratePlatformLibraries.kt
 20ca8ed2c3ee8dd1dadd02bca7ae031786812ef43c0bca0f139c9589533e2f81  kotlin/kotlin-native/utilities/cli-runner/src/org/jetbrains/kotlin/cli/utilities/InteropCompiler.kt
 5f5c32d8edde55de29869e6a9ce37d73c904ace9f86df7436e609e6dbc49a09a  kotlin/kotlin-native/utilities/cli-runner/src/org/jetbrains/kotlin/cli/utilities/LlvmClang.kt
-3f1afdc2f2671a21a47085c00706267d90a8e6214acb1f2e04557dc3aaac2edb  kotlin/kotlin-native/utilities/cli-runner/src/org/jetbrains/kotlin/cli/utilities/main.kt
+8a029cd04e21f6ae6bc9e1ece80927d8a9309e541edfea80e6216783b7fb8159  kotlin/kotlin-native/utilities/cli-runner/src/org/jetbrains/kotlin/cli/utilities/main.kt
 99b6c91fc552043f0d327aec1465298c23ba5a0ff39cd0f689836e5a3693e62d  kotlin/libraries/kotlinx-metadata/klib/native/org/jetbrains/kotlin/serialization/ApproximatingStringTable.kt
 1e11ae4bb437095ef63ee12ea5da61d276346a5af3caf770670c0672e120c548  kotlin/libraries/kotlinx-metadata/klib/src/kotlinx/metadata/klib/ChunkedKlibModuleFragmentWriteStrategy.kt
 95dfbb1060f0ce57315699c39943533f87a65019aa8cb7083b406cd7150dd8df  kotlin/libraries/kotlinx-metadata/klib/src/kotlinx/metadata/klib/KlibHeader.kt
@@ -3412,7 +3412,7 @@ c41b87e107df3ccc8725793f4049b73e3a70657249934554176edef319945ccc  kotlin/native/
 c6e10dbeb8298025dace5d81b65ede1978b5628fea2857c42a2adc39219ad5c2  kotlin/native/cli-native/src/org/jetbrains/kotlin/cli/jvm/plugins/PluginCliParser.kt
 01a918ea4e8472a668540829e1f645f16626692978bf84facbf994de9843b884  kotlin/native/native.config/gen/org/jetbrains/kotlin/konan/config/NativeConfigurationKeys.kt
 34d36c1933b281cbb2aeaa5b0f0dcb4ddbef06df35810c69d09e2df03979e8a5  kotlin/native/native.config/native/org/jetbrains/kotlin/backend/konan/NativeConfigBackendTypesSupport.kt
-d531414c52598c5a5bbd57e933cac31d84ffbba9e832f57a47a33ed4528a3ad7  kotlin/native/native.config/native/org/jetbrains/kotlin/konan/target/NativeConfigTargetTypesSupport.kt
+2d09e24caf0cf0a20cdfbb2c529f6897b9ddd442c6b2f2f11043549eddb873e6  kotlin/native/native.config/native/org/jetbrains/kotlin/konan/target/NativeConfigTargetTypesSupport.kt
 792bc35e08a1a540d9aa9aa62621d9ba81d7d4fa0373b45e899af0a0d2479113  kotlin/native/native.config/src/org/jetbrains/kotlin/platform/konan/NativePlatform.kt
 494a5224c2da3d2ca808e4475ce85d3428785b0e321237ac60d0cd3c71801d42  kotlin/native/native.config/src/org/jetbrains/kotlin/platform/konan/deprecated.kt
 5d6e6a057bffafb05d26de6fb4e7ae932a3b08fd5e3a04640cc63a735ef85485  bootstrap/tests/E1K/E1KCases.kt
