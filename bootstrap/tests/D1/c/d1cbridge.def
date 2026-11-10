@@ -1,4 +1,0 @@
-package = d1cbridge
-headers = d1_c_bridge.h
-headerFilter = d1_c_bridge.h
-depends = posix

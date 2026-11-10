@@ -1,5 +1,0 @@
-depends = mini_base
-package = platform.mini_ext
----
-#define MINI_EXT_OFFSET 7
-static inline int mini_ext_calc(int x) { return x + MINI_EXT_OFFSET; }

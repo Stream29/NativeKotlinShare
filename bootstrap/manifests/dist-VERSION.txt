@@ -1,5 +1,0 @@
-Kotlin/Native Self-Hosted Native Distribution (linux_x64)
-Upstream Commit: 9180ce6a7a7d3627f88b424717583f28ddca052d
-Kotlin Version: 2.4.20-dev-7885
-Host & Target: linux_x64 (x86_64-unknown-linux-gnu)
-Bootstrap Stage: stage3 (built by stage2 under env -i PATH=/nonexistent, 0 JVM)

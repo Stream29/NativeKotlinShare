@@ -1,4 +1,0 @@
-package = platform.mini_base
----
-#define MINI_BASE_CONST 42
-static inline int mini_base_double(int x) { return x * 2; }

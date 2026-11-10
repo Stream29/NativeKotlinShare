@@ -1,9 +1,0 @@
-kotlin/kotlin-native/utilities/cli-runner/src/org/jetbrains/kotlin/cli/utilities/GeneratePlatformLibraries.kt
-kotlin/kotlin-native/utilities/cli-runner/src/org/jetbrains/kotlin/cli/utilities/main.kt
-kotlin/native/cli-native/src/org/jetbrains/kotlin/cli/bc/K2Native.kt
-kotlin/native/cli-native/src/org/jetbrains/kotlin/cli/bc/oneStageMode.kt
-kotlin/native/cli-native/src/org/jetbrains/kotlin/cli/common/CLICompiler.kt
-kotlin/native/cli-native/src/org/jetbrains/kotlin/cli/common/arguments/K2NativeArgumentParserSupport.kt
-kotlin/native/cli-native/src/org/jetbrains/kotlin/cli/common/environment/util.kt
-kotlin/native/cli-native/src/org/jetbrains/kotlin/cli/common/messages/NativeCliMessageRenderers.kt
-kotlin/native/cli-native/src/org/jetbrains/kotlin/cli/jvm/plugins/PluginCliParser.kt
