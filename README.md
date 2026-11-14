@@ -19,18 +19,18 @@ Official Kotlin/Native compiles Kotlin code into native executables, yet the com
 Our goal was straightforward:
 - **Keep 100% of upstream Kotlin's compiler algorithms intact** — the exact same IntelliJ PSI / LightTree parser, K2 FIR frontend, KLIB serializer/deserializer, Native IR lowerings, whole-program optimizer (`-opt`), and LLVM 21 code generator.
 - **Replace only the JVM host layer** (`java.io`, `java.nio`, `java.util.zip`, reflection, `ServiceLoader`, and JNI bridges) with direct Kotlin/Native POSIX/Win32 syscalls, `zlib`, GMP, and `kotlinx.cinterop` bindings.
-- **Compile `konanc` with itself using full whole-program optimization (`-opt` + LLVM `-O3`, zero `-ea` overhead)** and measure where a pure Kotlin/Native compiler beats the JVM — and where HotSpot C2 JIT still holds an advantage.
+- **Compile `konanc` with itself using full whole-program optimization (`-opt` + LLVM `-O3` + CMS GC + `latin1Strings` + `cCallMode=directOrIndirect`, zero `-ea` overhead)** and Native-specific host/runtime optimizations (zero-copy `protoc`-style Protobuf messages, zero-copy `zlib` slice inflate + hardware `crc32`, unthrottled CLI CMS heap, pure-Kotlin `@ThreadLocal` locks, and ASCII `< 128` lookup tables) — then measure head-to-head against HotSpot JDK 21 across every compiler workload.
 
 ### Prebuilt Whole-Program Optimized Distributions ([`v2.4.21-native`](https://github.com/Stream29/NativeKotlinShare/releases/tag/v2.4.21-native))
 
-All four archives below are built with **whole-program Kotlin/Native IR optimization (`-opt`, zero `-ea` assertion overhead), full K/N LLVM bitcode LTO passes, LLVM `-O3` codegen, and symbol stripping**, and have **zero JVM dependency**. On first run, `bin/konanc` (or `cinterop`, `klib`, `kotlinc-native`) automatically checks and initializes the official LLVM 21 / sysroot dependencies under `${KONAN_DATA_DIR:-~/.konan}/dependencies`.
+All four archives below are built with **whole-program Kotlin/Native IR optimization (`-opt`, zero `-ea` assertion overhead), Concurrent Mark-and-Sweep GC (`-Xbinary=gc=cms`) with an unthrottled CLI heap policy, compact Latin-1 strings (`-Xbinary=latin1Strings=true`), direct C interop (`-Xbinary=cCallMode=directOrIndirect`), full K/N LLVM bitcode LTO passes, LLVM `-O3` codegen, and symbol stripping**, and have **zero JVM dependency**. On first run, `bin/konanc` (or `cinterop`, `klib`, `kotlinc-native`) automatically checks and initializes the official LLVM 21 / sysroot dependencies under `${KONAN_DATA_DIR:-~/.konan}/dependencies`.
 
 | Host Platform | Release Archive | Archive Size | Archive SHA-256 | `konanc-cli` Binary Size & SHA-256 |
 | :--- | :--- | :---: | :--- | :--- |
-| **Linux x86_64** (`linux_x64`) | [`native-kotlin-dist-linux-x64.tar.gz`](https://github.com/Stream29/NativeKotlinShare/releases/download/v2.4.21-native/native-kotlin-dist-linux-x64.tar.gz) | `61.8 MiB` (`64,812,125 B`) | `0f58c522eab6bc2ada11199fdd9e1ca3d7667418285f38aa5340cb1e686f7d87` | `102.2 MiB` (`107,216,232 B`)<br>`29e20eb3cbd2dc1b9d0adeec8165ba23c613aca8ff12d9c822191598ee285ee3` |
-| **Linux ARM64** (`linux_arm64`) | [`native-kotlin-dist-linux-arm64.tar.gz`](https://github.com/Stream29/NativeKotlinShare/releases/download/v2.4.21-native/native-kotlin-dist-linux-arm64.tar.gz) | `112.5 MiB` (`117,972,666 B`) | `9b082fe0c05128a8f48350fb65d5bc2bd312d6905ff5098f609f79b4b1f00f57` | `33.7 MiB` (`35,354,504 B`)<br>`423416a74db157077dffbf31845c1f38cc72d5da879e6ce8518dbe9724d7fb45` |
-| **macOS Apple Silicon** (`macos_arm64`) | [`native-kotlin-dist-macos-arm64.tar.gz`](https://github.com/Stream29/NativeKotlinShare/releases/download/v2.4.21-native/native-kotlin-dist-macos-arm64.tar.gz) | `112.1 MiB` (`117,580,683 B`) | `d233a12b2c2d5b5f38a7b60787e4d7f86fdbff209ac45dc928e162dd6ce57126` | `117.3 MiB` (`123,007,504 B`)<br>`18b71eb266740a0fa896e84197f05849566d993a52648563134b3f9b07894543` |
-| **Windows x64** (`mingw_x64`) | [`native-kotlin-dist-windows-x64.zip`](https://github.com/Stream29/NativeKotlinShare/releases/download/v2.4.21-native/native-kotlin-dist-windows-x64.zip) | `31.6 MiB` (`33,140,634 B`) | `825c28778d0d64266e9d4a3f24a03f387f00f067acd004b9fea8a47377e0434f` | `57.4 MiB` (`60,135,936 B`)<br>`48a263ea555fe1a6d649755a596f06de9b67f9f3d7ceec4b983ccf5c7b8f5fe7` |
+| **Linux x86_64** (`linux_x64`) | [`native-kotlin-dist-linux-x64.tar.gz`](https://github.com/Stream29/NativeKotlinShare/releases/download/v2.4.21-native/native-kotlin-dist-linux-x64.tar.gz) | `86.6 MiB` (`90,786,415 B`) | `deca6a257bdda7cbd0f7e33cb7d973ce8dbe3f1364f95f944fb359bd1f574b96` | `98.0 MiB` (`102,784,864 B`)<br>`bb81733f0db40fe23316854bb35d35be945c007929746cf37edae8c67465d566` |
+| **Linux ARM64** (`linux_arm64`) | [`native-kotlin-dist-linux-arm64.tar.gz`](https://github.com/Stream29/NativeKotlinShare/releases/download/v2.4.21-native/native-kotlin-dist-linux-arm64.tar.gz) | `112.8 MiB` (`118,238,496 B`) | `c327bbc1c180f0f90a130599d4619b71c756a35bfdcb2e6efc57559a410cbf54` | `33.2 MiB` (`34,765,112 B`)<br>`aa3da2e13038a39ed94ba2b8ec333a5d1a6e694b3888f1a203d4df91513dbf58` |
+| **macOS Apple Silicon** (`macos_arm64`) | [`native-kotlin-dist-macos-arm64.tar.gz`](https://github.com/Stream29/NativeKotlinShare/releases/download/v2.4.21-native/native-kotlin-dist-macos-arm64.tar.gz) | `112.3 MiB` (`117,788,793 B`) | `81e7479f711cd9b437c13dbab8b019a8e2b32aeee64069598c59cf30d40abb66` | `116.7 MiB` (`122,318,656 B`)<br>`785ede6ff30df9bc64dc8843ff1075129f4d3396d7fbed6bec8990b461712487` |
+| **Windows x64** (`mingw_x64`) | [`native-kotlin-dist-windows-x64.zip`](https://github.com/Stream29/NativeKotlinShare/releases/download/v2.4.21-native/native-kotlin-dist-windows-x64.zip) | `31.7 MiB` (`33,259,021 B`) | `feb56a74e99f3ba0f9aab349936811601646dc9fabf30596c340704b8c22281d` | `56.4 MiB` (`59,118,080 B`)<br>`ef8ef1dce23d1abc45756e2146ed8548a735f6088180611b56fcca83b840f26f` |
 
 ---
 
@@ -40,8 +40,8 @@ All four archives below are built with **whole-program Kotlin/Native IR optimiza
 
 - **Hardware**: `12th Gen Intel Core i5-12500H` (4P + 8E cores / 16 threads, 16 GiB RAM, Ubuntu Linux `x86_64`).
 - **Compilers Under Test**:
-  - **Official JVM `konanc` (`stage0`)**: Upstream `:kotlin-native:dist` (`9180ce6a7a`) running on **Eclipse Temurin JDK 21.0.10+7** (`-Xmx4G` on 16-Thread Desktop; `-Xmx1536M -XX:ActiveProcessorCount=1` on Single-Core).
-  - **Self-Hosted Native `konanc`**: `bin/konanc-cli.kexe` (`102.2 MiB`, built with whole-program `-opt` + full K/N LLVM bitcode passes + LLVM `-O3` + stripped symbols, zero `-ea`), running with `0` JVM processes (`env -i` clean environment).
+  - **Official JVM `konanc` (`stage0`)**: Upstream `:kotlin-native:dist` (`9180ce6a7a`) running on **Eclipse Temurin JDK 21.0.12** (`-Xmx4G` on 16-Thread Desktop; `-Xmx1536M -XX:ActiveProcessorCount=1` on Single-Core).
+  - **Self-Hosted Native `konanc`**: `bin/konanc-cli.kexe` (`98.0 MiB`, built with whole-program `-opt` + CMS GC + `latin1Strings` + `cCallMode=directOrIndirect` + full K/N LLVM bitcode passes + LLVM `-O3` + stripped symbols, zero `-ea`), running with `0` JVM processes (`env -i` clean environment).
 - **Hardware Profiles**:
   - **Desktop (16 Threads)**: Unpinned full-machine execution.
   - **Single-Core (1 Thread)**: Pinned to a single physical core via `taskset -c 0` (with `-XX:ActiveProcessorCount=1` for JVM) to measure pure single-core instruction efficiency without background JIT/GC thread offloading.
@@ -89,12 +89,12 @@ konanc \
   -o build/b1k-backend-native.klib
 ```
 
-| Profile | Compiler | Wall Time (`s`) | Total CPU (`s`) | Peak RSS (`MiB`) | Context Switches | Notes |
+| Profile | Compiler | Wall Time (`s`) | Total CPU (`s`) | Peak RSS (`MiB`) | Context Switches | Native vs. JVM |
 | :--- | :--- | :---: | :---: | :---: | :---: | :--- |
-| **Desktop (16T)** | Official JVM `konanc` (JDK 21) | `19.912s` | `37.970s` | `876.3 MiB` | `131,394` | C2 JIT warms up over 197 large backend files + parallel GC |
-| **Desktop (16T)** | Self-Hosted Native `konanc` (`-opt -O3`) | `52.343s` | `65.435s` | `1,358.4 MiB` | **`2,244` (`58.6x` fewer)** | **`3.02x` faster** than unoptimized `-O0` Native (`158.1s`) |
-| **Single-Core (1T)** | Official JVM `konanc` (JDK 21) | `29.449s` | `29.250s` | `749.7 MiB` | `113,778` | 197 files (`~29s`) is long enough to amortize C2 JIT |
-| **Single-Core (1T)** | Self-Hosted Native `konanc` (`-opt -O3`) | `64.554s` | `64.160s` | `1,370.9 MiB` | **`13,013` (`8.7x` fewer)** | Pure AOT execution; K/N MM GC pause overhead on large IR graph |
+| **Desktop (16T)** | Official JVM `konanc` (JDK 21) | `20.666s` | `40.290s` | `862.5 MiB` | `128,894` | Baseline (warmed C2 JIT + parallel GC over 197 files) |
+| **Desktop (16T)** | **Self-Hosted Native `konanc` (`-opt -O3`)** | **`12.437s`** | **`16.280s`** | `2,863.8 MiB` | **`267`** | **`1.66x` faster wall, `2.47x` less CPU, `483x` fewer ctx switches** |
+| **Single-Core (1T)** | Official JVM `konanc` (JDK 21) | `30.695s` | `30.495s` | `754.5 MiB` | `112,937` | Baseline |
+| **Single-Core (1T)** | **Self-Hosted Native `konanc` (`-opt -O3`)** | **`16.221s`** | **`16.105s`** | `2,787.1 MiB` | **`3,404`** | **`1.89x` faster wall, `1.89x` less CPU, `33.2x` fewer ctx switches** |
 
 #### Case 1B — Compiling the Compiler CLI Entrypoint Module (`e1c-cli-native.klib`, 9 `.kt` files against 54 KLIBs)
 
@@ -124,10 +124,10 @@ konanc \
 
 | Profile | Compiler | Wall Time (`s`) | Total CPU (`s`) | Peak RSS (`MiB`) | Context Switches | Native vs. JVM |
 | :--- | :--- | :---: | :---: | :---: | :---: | :--- |
-| **Desktop (16T)** | Official JVM `konanc` (JDK 21) | `4.406s` | `10.080s` | `374.5 MiB` | `71,520` | Baseline |
-| **Desktop (16T)** | Self-Hosted Native `konanc` (`-opt -O3`) | **`4.208s`** | **`5.200s`** | `509.4 MiB` | **`332`** | **`1.05x` faster wall, `1.94x` less CPU, `215x` fewer ctx switches** |
-| **Single-Core (1T)** | Official JVM `konanc` (JDK 21) | `7.383s` | `7.320s` | `352.1 MiB` | `61,684` | Baseline (JIT compilation shares the single core) |
-| **Single-Core (1T)** | Self-Hosted Native `konanc` (`-opt -O3`) | **`5.258s`** | **`5.220s`** | `511.2 MiB` | **`1,634`** | **`1.40x` faster wall, `1.40x` less CPU, `37.7x` fewer ctx switches** |
+| **Desktop (16T)** | Official JVM `konanc` (JDK 21) | `4.551s` | `10.390s` | `404.8 MiB` | `85,980` | Baseline |
+| **Desktop (16T)** | **Self-Hosted Native `konanc` (`-opt -O3`)** | **`1.054s`** | **`1.230s`** | `561.0 MiB` | **`43`** | **`4.32x` faster wall, `8.45x` less CPU, `2,000x` fewer ctx switches** |
+| **Single-Core (1T)** | Official JVM `konanc` (JDK 21) | `7.715s` | `7.650s` | `351.9 MiB` | `60,842` | Baseline (JIT compilation shares the single core) |
+| **Single-Core (1T)** | **Self-Hosted Native `konanc` (`-opt -O3`)** | **`1.261s`** | **`1.240s`** | `559.7 MiB` | **`269`** | **`6.12x` faster wall, `6.17x` less CPU, `226x` fewer ctx switches** |
 
 #### Case 1C — Linking the Full Self-Hosted Compiler Executable (`konanc-cli.kexe`, 55 KLIBs / 3,430 files with Static Caches)
 
@@ -152,12 +152,12 @@ konanc \
   -o build/konanc-cli-linked.kexe
 ```
 
-| Profile | Compiler | Wall Time (`s`) | Total CPU (`s`) | Peak RSS (`MiB`) | Context Switches | Notes |
+| Profile | Compiler | Wall Time (`s`) | Total CPU (`s`) | Peak RSS (`MiB`) | Context Switches | Native vs. JVM |
 | :--- | :--- | :---: | :---: | :---: | :---: | :--- |
-| **Desktop (16T)** | Official JVM `konanc` (JDK 21) | `8.751s` | `18.745s` | `1,164.0 MiB` | `102,555` | Links 55 cached compiler KLIBs + 2 entrypoint `.kt` files |
-| **Desktop (16T)** | Self-Hosted Native `konanc` (`-opt -O3`) | `12.768s` | **`16.960s`** | `1,166.1 MiB` | **`10,894` (`9.4x` fewer)** | **`1.11x` less total CPU than JVM**; identical `1.14 GiB` RSS (`ld.lld` dominates) |
-| **Single-Core (1T)** | Official JVM `konanc` (JDK 21) | `13.169s` | `13.070s` | `1,165.2 MiB` | `73,024` | Baseline |
-| **Single-Core (1T)** | Self-Hosted Native `konanc` (`-opt -O3`) | `15.876s` | `15.770s` | `1,165.3 MiB` | **`5,037` (`14.5x` fewer)** | Within `1.21x` of JVM wall time; identical peak RSS |
+| **Desktop (16T)** | Official JVM `konanc` (JDK 21) | `9.126s` | `19.040s` | `1,422.8 MiB` | `92,367` | Links 55 cached compiler KLIBs + 2 entrypoint `.kt` files |
+| **Desktop (16T)** | **Self-Hosted Native `konanc` (`-opt -O3`)** | **`4.598s`** | **`6.870s`** | `1,503.1 MiB` | **`10,094`** | **`1.98x` faster wall, `2.77x` less CPU, `9.2x` fewer ctx switches** |
+| **Single-Core (1T)** | Official JVM `konanc` (JDK 21) | `13.945s` | `13.845s` | `1,420.8 MiB` | `74,409` | Baseline |
+| **Single-Core (1T)** | **Self-Hosted Native `konanc` (`-opt -O3`)** | **`5.888s`** | **`5.840s`** | `1,499.2 MiB` | **`1,688`** | **`2.37x` faster wall, `2.37x` less CPU, `44.1x` fewer ctx switches** |
 
 ---
 
@@ -184,10 +184,10 @@ konanc \
 
 | Profile | Compiler | Wall Time (`s`) | Total CPU (`s`) | Peak RSS (`MiB`) | Context Switches | Native vs. JVM |
 | :--- | :--- | :---: | :---: | :---: | :---: | :--- |
-| **Desktop (16T)** | Official JVM `konanc` (JDK 21) | `1.873s` | `3.030s` | `246.9 MiB` | `18,296` | Baseline |
-| **Desktop (16T)** | Self-Hosted Native `konanc` (`-opt -O3`) | **`0.780s`** | **`0.900s`** | **`198.9 MiB`** | **`171`** | **`2.40x` faster, `3.37x` less CPU, `-19.4%` RAM, `107x` fewer ctx switches** |
-| **Single-Core (1T)** | Official JVM `konanc` (JDK 21) | `2.599s` | `2.570s` | `269.3 MiB` | `24,728` | Baseline |
-| **Single-Core (1T)** | Self-Hosted Native `konanc` (`-opt -O3`) | **`0.865s`** | **`0.850s`** | **`199.0 MiB`** | **`445`** | **`3.00x` faster, `3.02x` less CPU, `-26.1%` RAM, `55.6x` fewer ctx switches** |
+| **Desktop (16T)** | Official JVM `konanc` (JDK 21) | `1.883s` | `3.030s` | `249.2 MiB` | `18,515` | Baseline |
+| **Desktop (16T)** | **Self-Hosted Native `konanc` (`-opt -O3`)** | **`0.132s`** | **`0.130s`** | **`205.7 MiB`** | **`13`** | **`14.27x` faster, `23.31x` less CPU, `-17.5%` RAM, `1,424x` fewer ctx switches** |
+| **Single-Core (1T)** | Official JVM `konanc` (JDK 21) | `2.709s` | `2.680s` | `269.4 MiB` | `25,071` | Baseline |
+| **Single-Core (1T)** | **Self-Hosted Native `konanc` (`-opt -O3`)** | **`0.141s`** | **`0.130s`** | **`205.9 MiB`** | **`39`** | **`19.21x` faster, `20.62x` less CPU, `-23.6%` RAM, `643x` fewer ctx switches** |
 
 #### Case 2B — Debug Application Executable Build (`-g`, `d1-corpus.kexe` with `stdlib-cache`)
 
@@ -209,10 +209,10 @@ konanc \
 
 | Profile | Compiler | Wall Time (`s`) | Total CPU (`s`) | Peak RSS (`MiB`) | Context Switches | Native vs. JVM |
 | :--- | :--- | :---: | :---: | :---: | :---: | :--- |
-| **Desktop (16T)** | Official JVM `konanc` (JDK 21) | `4.819s` | `10.300s` | `457.5 MiB` | `91,619` | Baseline |
-| **Desktop (16T)** | Self-Hosted Native `konanc` (`-opt -O3`) | **`4.799s`** | **`5.680s`** | **`308.1 MiB`** | **`1,070`** | **Faster wall, `1.81x` less CPU, `32.7%` less RAM (`-149.4 MiB`), `85.6x` fewer ctx switches** |
-| **Single-Core (1T)** | Official JVM `konanc` (JDK 21) | `7.577s` | `7.520s` | `404.6 MiB` | `64,385` | Baseline |
-| **Single-Core (1T)** | Self-Hosted Native `konanc` (`-opt -O3`) | **`5.541s`** | **`5.500s`** | **`315.9 MiB`** | **`2,395`** | **`1.37x` faster wall, `1.37x` less CPU, `21.9%` less RAM (`-88.7 MiB`), `26.9x` fewer ctx switches** |
+| **Desktop (16T)** | Official JVM `konanc` (JDK 21) | `4.783s` | `10.100s` | `462.3 MiB` | `80,332` | Baseline |
+| **Desktop (16T)** | **Self-Hosted Native `konanc` (`-opt -O3`)** | **`0.896s`** | **`1.020s`** | **`428.4 MiB`** | **`615`** | **`5.34x` faster wall, `9.90x` less CPU, `-7.3%` RAM, `131x` fewer ctx switches** |
+| **Single-Core (1T)** | Official JVM `konanc` (JDK 21) | `7.880s` | `7.820s` | `405.1 MiB` | `65,234` | Baseline |
+| **Single-Core (1T)** | **Self-Hosted Native `konanc` (`-opt -O3`)** | **`1.030s`** | **`1.010s`** | `430.8 MiB` | **`525`** | **`7.65x` faster wall, `7.74x` less CPU, `124x` fewer ctx switches** |
 
 #### Case 2C — Release Application Executable Build (`-opt`, `OptBench.kt -> opt-bench.kexe`)
 
@@ -229,10 +229,10 @@ konanc \
 
 | Profile | Compiler | Wall Time (`s`) | Total CPU (`s`) | Peak RSS (`MiB`) | Context Switches | Native vs. JVM |
 | :--- | :--- | :---: | :---: | :---: | :---: | :--- |
-| **Desktop (16T)** | Official JVM `konanc` (JDK 21) | `12.835s` | `19.060s` | `723.0 MiB` | `94,380` | Baseline |
-| **Desktop (16T)** | Self-Hosted Native `konanc` (`-opt -O3`) | `18.311s` | `20.730s` | **`424.6 MiB`** | **`1,819`** | **`41.3%` less RAM (`-298.4 MiB`), near-equal CPU, `51.9x` fewer ctx switches** |
-| **Single-Core (1T)** | Official JVM `konanc` (JDK 21) | `15.572s` | `15.465s` | `532.4 MiB` | `66,440` | Baseline |
-| **Single-Core (1T)** | Self-Hosted Native `konanc` (`-opt -O3`) | `20.724s` | `20.590s` | **`417.1 MiB`** | **`5,810`** | **`21.7%` less RAM (`-115.3 MiB`), `11.4x` fewer ctx switches** |
+| **Desktop (16T)** | Official JVM `konanc` (JDK 21) | `12.550s` | `18.510s` | `651.3 MiB` | `92,942` | Baseline |
+| **Desktop (16T)** | **Self-Hosted Native `konanc` (`-opt -O3`)** | **`8.195s`** | **`9.140s`** | `790.8 MiB` | **`720`** | **`1.53x` faster wall, `2.03x` less CPU, `129x` fewer ctx switches** |
+| **Single-Core (1T)** | Official JVM `konanc` (JDK 21) | `15.875s` | `15.765s` | `530.1 MiB` | `66,301` | Baseline |
+| **Single-Core (1T)** | **Self-Hosted Native `konanc` (`-opt -O3`)** | **`9.236s`** | **`9.170s`** | `791.7 MiB` | **`1,580`** | **`1.72x` faster wall, `1.72x` less CPU, `42.0x` fewer ctx switches** |
 
 #### Case 2D — Compiled Application Binary Runtime (`opt-bench.kexe` vs. JDK 21 `OptBench.jar`)
 
@@ -247,10 +247,10 @@ Both binaries produce the exact same deterministic checksum (`CHECKSUM=558472489
 
 | Profile | Runtime | Wall Time (`s`) | Total CPU (`s`) | Peak RSS (`MiB`) | Context Switches | Sub-Stage Breakdown (`AST` / `Scope` / `Kernel` / `Total`) |
 | :--- | :--- | :---: | :---: | :---: | :---: | :--- |
-| **Desktop (16T)** | Temurin JDK 21 (`java -jar OptBench.jar`) | `0.234s` | `0.270s` | `55.5 MiB` | `501` | `8.68ms` / `34.94ms` / `44.12ms` / `87.64ms` |
-| **Desktop (16T)** | Native `opt-bench.kexe` (`konanc -opt`) | **`0.191s` (`1.23x` faster)** | **`0.180s` (`1.50x` less)** | **`5.6 MiB` (`9.9x` less RAM)** | **`8` (`63x` fewer)** | **`7.71ms`** / `41.14ms` / **`44.00ms`** / `92.85ms` |
-| **Single-Core (1T)** | Temurin JDK 21 (`java -jar OptBench.jar`) | `0.252s` | `0.240s` | `46.5 MiB` | `590` | `8.48ms` / `33.62ms` / `44.34ms` / `86.03ms` |
-| **Single-Core (1T)** | Native `opt-bench.kexe` (`konanc -opt`) | **`0.190s` (`1.33x` faster)** | **`0.180s` (`1.33x` less)** | **`5.8 MiB` (`8.0x` less RAM)** | **`21` (`28x` fewer)** | **`7.92ms`** / `41.53ms` / **`44.12ms`** / `93.58ms` |
+| **Desktop (16T)** | Temurin JDK 21 (`java -jar OptBench.jar`) | `0.249s` | `0.290s` | `55.1 MiB` | `487` | `9.62ms` / `37.14ms` / `45.53ms` / `92.04ms` |
+| **Desktop (16T)** | **Native `opt-bench.kexe` (`konanc -opt`)** | **`0.200s` (`1.25x` faster)** | **`0.190s` (`1.53x` less)** | **`5.6 MiB` (`9.8x` less RAM)** | **`8` (`61x` fewer)** | **`8.63ms`** / `44.32ms` / **`45.06ms`** / `98.31ms` |
+| **Single-Core (1T)** | Temurin JDK 21 (`java -jar OptBench.jar`) | `0.270s` | `0.260s` | `46.5 MiB` | `539` | `10.23ms` / `35.84ms` / `44.45ms` / `92.97ms` |
+| **Single-Core (1T)** | **Native `opt-bench.kexe` (`konanc -opt`)** | **`0.203s` (`1.33x` faster)** | **`0.190s` (`1.37x` less)** | **`5.8 MiB` (`8.0x` less RAM)** | **`19` (`28x` fewer)** | **`8.91ms`** / `44.37ms` / `45.57ms` / `98.52ms` |
 
 ---
 
@@ -280,14 +280,14 @@ konanc \
 
 | Concurrency | Compiler | Wall Time (`s`) | Throughput (`mod/s`) | Total CPU (`s`) | Peak Worker RSS (`MiB`) | Total Context Switches | Native Advantage |
 | :---: | :--- | :---: | :---: | :---: | :---: | :---: | :--- |
-| **`-j1`** | Official JVM `konanc` | `21.902s` | `0.73 mod/s` | `32.14s` | `296.3 MiB` | `329,429` | Baseline |
-| **`-j1`** | **Self-Hosted Native `konanc`** | **`6.626s`** | **`2.41 mod/s`** | **`7.43s`** | **`200.7 MiB`** | **`1,584`** | **`3.31x` faster wall, `4.33x` less CPU, `-32.3%` RAM, `208x` fewer ctx switches** |
-| **`-j4`** | Official JVM `konanc` | `8.241s` | `1.94 mod/s` | `47.38s` | `249.9 MiB` | `353,711` | Baseline |
-| **`-j4`** | **Self-Hosted Native `konanc`** | **`2.423s`** | **`6.60 mod/s`** | **`10.90s`** | **`201.1 MiB`** | **`3,989`** | **`3.40x` faster wall, `4.35x` less CPU, `-19.5%` RAM, `88.7x` fewer ctx switches** |
-| **`-j8`** | Official JVM `konanc` | `5.809s` | `2.75 mod/s` | `63.15s` | `288.3 MiB` | `346,554` | Baseline |
-| **`-j8`** | **Self-Hosted Native `konanc`** | **`1.715s`** | **`9.33 mod/s`** | **`14.97s`** | **`200.8 MiB`** | **`3,077`** | **`3.39x` faster wall, `4.22x` less CPU, `-30.4%` RAM, `113x` fewer ctx switches** |
-| **`-j16`** | Official JVM `konanc` | `5.225s` | `3.06 mod/s` | `70.43s` | `274.7 MiB` | `439,149` | 16 JVMs spawn hundreds of C1/C2 JIT & GC threads |
-| **`-j16`** | **Self-Hosted Native `konanc`** | **`1.693s`** | **`9.45 mod/s`** | **`15.81s`** | **`199.7 MiB`** | **`3,815`** | **`3.09x` faster wall, `4.45x` less CPU, `-27.3%` RAM, `115x` fewer ctx switches** |
+| **`-j1`** | Official JVM `konanc` | `22.993s` | `0.70 mod/s` | `33.81s` | `295.3 MiB` | `320,728` | Baseline |
+| **`-j1`** | **Self-Hosted Native `konanc`** | **`1.583s`** | **`10.11 mod/s`** | **`1.44s`** | **`207.0 MiB`** | **`313`** | **`14.52x` faster wall, `23.48x` less CPU, `-29.9%` RAM, `1,025x` fewer ctx switches** |
+| **`-j4`** | Official JVM `konanc` | `8.521s` | `1.88 mod/s` | `49.20s` | `290.6 MiB` | `355,001` | Baseline |
+| **`-j4`** | **Self-Hosted Native `konanc`** | **`0.489s`** | **`32.72 mod/s`** | **`1.78s`** | **`207.0 MiB`** | **`1,033`** | **`17.43x` faster wall, `27.64x` less CPU, `-28.8%` RAM, `344x` fewer ctx switches** |
+| **`-j8`** | Official JVM `konanc` | `6.062s` | `2.64 mod/s` | `65.95s` | `271.8 MiB` | `324,256` | Baseline |
+| **`-j8`** | **Self-Hosted Native `konanc`** | **`0.364s`** | **`43.96 mod/s`** | **`2.43s`** | **`206.6 MiB`** | **`2,259`** | **`16.65x` faster wall, `27.14x` less CPU, `-24.0%` RAM, `144x` fewer ctx switches** |
+| **`-j16`** | Official JVM `konanc` | `5.504s` | `2.91 mod/s` | `74.72s` | `255.7 MiB` | `436,901` | 16 JVMs spawn hundreds of C1/C2 JIT & GC threads |
+| **`-j16`** | **Self-Hosted Native `konanc`** | **`0.322s`** | **`49.69 mod/s`** | **`3.12s`** | **`206.8 MiB`** | **`2,738`** | **`17.09x` faster wall, `23.95x` less CPU, `-19.1%` RAM, `160x` fewer ctx switches** |
 
 ---
 
@@ -307,10 +307,10 @@ cinterop \
 
 | Profile | Tool | Wall Time (`s`) | Total CPU (`s`) | Peak RSS (`MiB`) | Context Switches | Native Speedup |
 | :--- | :--- | :---: | :---: | :---: | :---: | :--- |
-| **Desktop (16T)** | Official JVM `cinterop` (JDK 21) | `0.940s` (`940 ms`) | `1.110s` | `160.0 MiB` | `20,744` | Baseline |
-| **Desktop (16T)** | **Self-Hosted Native `cinterop`** | **`0.071s` (`71 ms`)** | **`0.060s`** | **`123.8 MiB`** | **`25`** | **`13.24x` faster wall, `18.50x` less CPU, `-22.6%` RAM, `830x` fewer ctx switches** |
-| **Single-Core (1T)** | Official JVM `cinterop` (JDK 21) | `1.173s` (`1,173 ms`) | `0.840s` | `191.1 MiB` | `10,669` | Baseline |
-| **Single-Core (1T)** | **Self-Hosted Native `cinterop`** | **`0.059s` (`59 ms`)** | **`0.050s`** | **`124.5 MiB`** | **`39`** | **`19.88x` faster wall, `16.80x` less CPU, `-34.9%` RAM, `274x` fewer ctx switches** |
+| **Desktop (16T)** | Official JVM `cinterop` (JDK 21) | `0.969s` (`969 ms`) | `1.190s` | `161.2 MiB` | `21,722` | Baseline |
+| **Desktop (16T)** | **Self-Hosted Native `cinterop`** | **`0.071s` (`71 ms`)** | **`0.060s`** | **`119.8 MiB`** | **`23`** | **`13.65x` faster wall, `19.83x` less CPU, `-25.7%` RAM, `944x` fewer ctx switches** |
+| **Single-Core (1T)** | Official JVM `cinterop` (JDK 21) | `1.209s` (`1,209 ms`) | `0.880s` | `191.4 MiB` | `10,635` | Baseline |
+| **Single-Core (1T)** | **Self-Hosted Native `cinterop`** | **`0.057s` (`57 ms`)** | **`0.040s`** | **`120.4 MiB`** | **`40`** | **`21.21x` faster wall, `22.00x` less CPU, `-37.1%` RAM, `266x` fewer ctx switches** |
 
 #### Case 4B — Inspecting KLIB ABI Signatures (`klib dump-abi`)
 
@@ -321,23 +321,24 @@ klib dump-abi build/e1c-cli-native.klib -signature-version 2
 
 | Profile | Tool | Wall Time (`s`) | Total CPU (`s`) | Peak RSS (`MiB`) | Context Switches | Native Speedup |
 | :--- | :--- | :---: | :---: | :---: | :---: | :--- |
-| **Desktop (16T)** | Official JVM `klib` (JDK 21) | `0.213s` (`213 ms`) | `0.340s` | `68.2 MiB` | `3,540` | Baseline |
-| **Desktop (16T)** | **Self-Hosted Native `klib`** | **`0.030s` (`30 ms`)** | **`0.020s`** | `94.6 MiB` | **`27`** | **`7.10x` faster wall, `17.00x` less CPU, `131x` fewer ctx switches** |
-| **Single-Core (1T)** | Official JVM `klib` (JDK 21) | `0.279s` (`279 ms`) | `0.270s` | `65.7 MiB` | `4,148` | Baseline |
-| **Single-Core (1T)** | **Self-Hosted Native `klib`** | **`0.029s` (`29 ms`)** | **`0.010s`** | `95.5 MiB` | **`27`** | **`9.62x` faster wall, `27.00x` less CPU, `154x` fewer ctx switches** |
+| **Desktop (16T)** | Official JVM `klib` (JDK 21) | `0.204s` (`204 ms`) | `0.330s` | `68.3 MiB` | `3,035` | Baseline |
+| **Desktop (16T)** | **Self-Hosted Native `klib`** | **`0.024s` (`24 ms`)** | **`0.010s`** | `93.0 MiB` | **`6`** | **`8.50x` faster wall, `33.00x` less CPU, `506x` fewer ctx switches** |
+| **Single-Core (1T)** | Official JVM `klib` (JDK 21) | `0.308s` (`308 ms`) | `0.290s` | `65.8 MiB` | `3,846` | Baseline |
+| **Single-Core (1T)** | **Self-Hosted Native `klib`** | **`0.021s` (`21 ms`)** | **`0.010s`** | `93.1 MiB` | **`11`** | **`14.67x` faster wall, `29.00x` less CPU, `350x` fewer ctx switches** |
 
 ---
 
 ### Summary of Benchmark Takeaways
 
-1. **Where Self-Hosted Native `konanc` Wins Immediately**:
-   - **Developer & CI Tooling (`cinterop`, `klib`)**: **`7.1x` to `19.9x` faster** (`59–71 ms` vs `940–1,173 ms` for `cinterop`; `29–30 ms` vs `213–279 ms` for `klib dump-abi`), because direct `kotlinx.cinterop` calls into `libclang` and `zlib` eliminate JVM startup, classloading, and JNI marshaling.
-   - **Small-to-Medium Module & Debug Binary Builds (`d1-core.klib`, `e1c-cli-native.klib`, `d1-corpus.kexe -g`)**: **`2.40x` to `3.00x` faster wall time** (`3.02x–3.37x` less CPU) on `d1-core.klib`, **`1.05x` to `1.40x` faster** (`1.40x–1.94x` less CPU) on `e1c-cli-native.klib`, and **faster than JVM even on full debug `.kexe` builds (`4.799s` vs `4.819s` Desktop, `5.541s` vs `7.577s` / `1.37x` faster Single-Core, with `1.81x` less CPU and `32.7%` less RAM)**.
-   - **Parallel Multi-Module Project Builds (`-j1` to `-j16`)**: **`3.09x` to `3.40x` faster wall time** (`9.45 mod/s` vs `3.06 mod/s` at `-j16`), **`4.22x` to `4.45x` less total CPU core-seconds** (`15.81s` vs `70.43s` at `-j16`), **`20%–32%` lower peak RSS per worker**, and **`89x` to `208x` fewer OS context switches**, because 16 native compiler processes do not spawn competing JIT and GC thread pools.
-   - **Peak Memory & CPU Efficiency on Monolithic Builds**: **`41.3%` lower peak RSS** on `-opt` application builds (`424.6 MiB` vs `723.0 MiB`), and **`1.11x` less total CPU** than JVM when linking the 55-module compiler with static caches (`16.96s` vs `18.75s` CPU).
-2. **Where JVM HotSpot (`JDK 21`) Still Wins**:
-   - **Long Single-Process Compilation (`b1k-backend-native.klib` with 197 large files) and Uncached Whole-Program `-opt` Passes**: Once a single compiler process runs for `15–30+ seconds` over a massive pointer-dense AST/FIR/IR graph, HotSpot's multi-core background C2 profile-guided JIT and parallel generational GC outperform Kotlin/Native's single-threaded AOT codegen and stop-the-world mark-and-sweep memory manager (`19.91s` vs `52.34s` on 197-file `b1k`; `12.84s` vs `18.31s` on `-opt` release link).
-   - Notably, compiling `konanc-cli.kexe` itself with clean zero-`-ea` whole-program `-opt` + K/N LLVM bitcode LTO passes + LLVM `-O3` sped up Case 1A by **`3.02x`** (`158.1s -> 52.34s`) over unoptimized (`-O0`) Native, and removing `-ea` assertion checks + enabling full K/N LLVM bitcode optimization sped up cached linking (`Case 1C`), debug `.kexe` builds (`Case 2B`), and 16-module parallel builds (`Case 3`) by an additional **`1.9x–2.7x`**.
+1. **Self-Hosted Native `konanc` Wins Every Single Benchmark (`10 / 10` Cases, Both 16-Thread Desktop and Single-Core)**:
+   - **Largest Single-Process Compiler Backend Build (`Case 1A`, `b1k-backend-native.klib`, 197 files / 50,355 LOC)**: **`1.66x` faster wall time on Desktop (`12.437s` vs `20.666s`, `2.47x` less CPU)** and **`1.89x` faster on Single-Core (`16.221s` vs `30.695s`)** — beating warmed HotSpot C2 JIT across every compiler phase (`INIT`, `ANALYZE`, `FIR2IR`, `IR PRE-LOWERING`, `IR SERIALIZATION`, and `KLIB WRITING`).
+   - **Full Compiler Cached Link & Whole-Program `-opt` Release Builds (`Case 1C` & `Case 2C`)**: **`1.98x–2.37x` faster** linking the 55-module compiler (`4.598s` vs `9.126s` Desktop; `5.888s` vs `13.945s` Single-Core, `2.77x` less CPU), and **`1.53x–1.72x` faster** on full whole-program `-opt` release builds (`8.195s` vs `12.550s` Desktop; `9.236s` vs `15.875s` Single-Core, `2.03x` less CPU).
+   - **Application Library & Debug Executable Builds (`Case 1B`, `Case 2A`, `Case 2B`)**: **`14.27x–19.21x` faster** on `d1-core.klib` (`132 ms` vs `1,883 ms`, `23.3x` less CPU), **`4.32x–6.12x` faster** on `e1c-cli-native.klib` (`1.054s` vs `4.551s` against 54 compiler KLIBs, `8.45x` less CPU), and **`5.34x–7.65x` faster** on full debug `.kexe` builds (`0.896s` vs `4.783s`, `9.90x` less CPU).
+   - **Parallel Multi-Module Project Builds (`Case 3`, `-j1` to `-j16`)**: **`14.52x` to `17.43x` faster wall time** (**`49.69 mod/s` vs `2.91 mod/s` at `-j16` — `0.322s` vs `5.504s`!**), **`23.5x` to `27.6x` less total CPU core-seconds** (`3.12s` vs `74.72s` at `-j16`), **`19%–30%` lower peak RSS per worker**, and **`144x` to `1,025x` fewer OS context switches**.
+   - **Developer & CI Tooling (`Case 4A` `cinterop`, `Case 4B` `klib dump-abi`)**: **`8.50x` to `21.21x` faster** (`57–71 ms` vs `969–1,209 ms` for `cinterop`; `21–24 ms` vs `204–308 ms` for `klib dump-abi`).
+2. **Memory vs. Speed Trade-off on Large Single-Process Compiles**:
+   - On short-lived and multi-module builds (`Cases 2A, 2B, 3, 4A`), Native `konanc` uses **`7%–37%` less peak RSS** than JVM (`120–207 MiB` vs `161–295 MiB`).
+   - On heavy single-process builds (`Case 1A` 197-file backend and `Case 2C` `-opt`), configuring Kotlin/Native's CMS GC as an unthrottled batch CLI collector (`targetHeapUtilization = 0.35`, `pauseOnTargetHeapOverflow = false`) trades higher single-process RSS (`2.80 GiB` vs `863 MiB` on `Case 1A`) to eliminate repeated GC mark cycles during transient AST/FIR/IR graph construction — cutting `Case 1A` wall time from `52.343s` down to **`12.437s` (`4.21x` speedup)**.
 
 ---
 
@@ -377,7 +378,18 @@ git log --oneline 9180ce6a7a7d3627f88b424717583f28ddca052d..HEAD
    - Splitting `out.bc` into 16 partitions with `llvm-split -j=16` reduced `-O3` codegen time to **~60 seconds** across 16 cores. However, `llvm-split` promotes `internal` C++ helper symbols (from the merged Kotlin/Native `runtime.bc` / `llvm.bc`) to global visibility so partitions can call each other, which then collides (`duplicate symbol`) with the same C++ symbols in `libllvm_support.a` and LLVM static archives during final linking.
    - We solved this cleanly by pre-linking the 16 compiled partitions into a single relocatable object (`ld.lld -r -o konanc-kotlin.o`) so all cross-partition references resolve internally, and then running `llvm-objcopy --localize-symbols` on the promoted `_Z*` symbols before the final `--gc-sections --strip-all` link.
 
-### 3. Three-Stage Bootstrap Fixed-Point (`stage2 == stage3`) & Artifact Consistency Verification
+### 3. Six Host, Runtime & CMS GC Optimizations That Put Native Ahead of HotSpot JDK 21
+
+An initial straight port compiled with `-opt -O3` already beat JVM on short-lived builds (`cinterop`, `klib`, small modules) by `2.4x–19.9x`, but trailed warmed HotSpot JDK 21 on 197-file `Case 1A` (`52.343s` vs `19.912s`) and `-opt` release builds (`18.311s` vs `12.835s`). Profiling the self-hosted binary revealed six host-layer and runtime bottlenecks whose removal sped up `Case 1A` by an additional **`4.21x` (`52.343s -> 12.437s`)** and `Case 3 (-j16)` by **`5.26x` (`1.693s -> 0.322s`)**:
+
+1. **Direct `protoc`-Style Generated Protobuf Messages + Zero-Copy `ByteString` / `CodedInputStream`**: Replaced dynamic map/list field bags in `GeneratedMessageLite` with direct typed fields, bitmask presence words, cached serialized sizes, and zero-copy `ByteString` slice views for KLIB metadata and IR serialization/deserialization.
+2. **Concurrent Mark-and-Sweep GC (`-Xbinary=gc=cms`) + Unthrottled Batch CLI Heap Policy**: Enabled Kotlin/Native's CMS collector and tuned `GC` startup parameters for batch compiler processes (`minHeapBytes = 256 MiB`, `targetHeapBytes = 512 MiB`, `targetHeapUtilization = 0.35`, `heapTriggerCoefficient = 0.90`, `pauseOnTargetHeapOverflow = false`), eliminating stop-the-world GC thrashing during large FIR/IR phases.
+3. **Pure-Kotlin `@ThreadLocal` Token + Fast `AtomicReference` Reentrant Locks**: Replaced `pthread_mutex_t` + native `Cleaner` allocations in `LockBasedStorageManager`, `SingleThreadValue`, and IntelliJ storage locks with zero-syscall pure-Kotlin `@ThreadLocal` thread tokens and `AtomicReference` CAS fast paths.
+4. **ASCII `< 128` Lookup Tables & Fast Lexer Character Support**: Added branchless `128`-entry ASCII lookup tables for `Character` / `String` case conversion and lexer whitespace/identifier scanning (`LexerCharacterSupport.kt`), reserving ICU/Unicode table lookups strictly for non-ASCII code points.
+5. **Zero-Copy KLIB ZIP Slice Inflate + Hardware `zlib.crc32`**: Streamed raw ZIP entry byte ranges directly from the mapped archive buffer into `zlib` (`inflateRawSliceNative`) without per-entry slice copies, computed checksums via hardware-accelerated `zlib.crc32`, and removed redundant per-file `fsync` calls during KLIB writing (`1,084,978 loc/s` in `KLIB WRITING`).
+6. **Compact Latin-1 Strings & Direct C Interop (`-Xbinary=latin1Strings=true` + `-Xbinary=cCallMode=directOrIndirect`)**: Halved memory bandwidth for ASCII compiler identifiers/signatures and removed unnecessary C-interop state transitions across LLVM/Clang/zlib calls.
+
+### 4. Three-Stage Bootstrap Fixed-Point (`stage2 == stage3`) & Artifact Consistency Verification
 
 1. **Three-Stage Self-Bootstrap Fixed-Point (`stage0 -> stage1 -> stage2 -> stage3`)**:
    - **`stage0` (Official JVM `konanc`)** compiles the 55 compiler KLIBs and links **`stage1/konanc-cli.kexe`**.
